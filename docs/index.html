@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Toronto Bike Share — 2025 data explorations</title>
+<style>
+  :root { --bg: #f8f7f4; --ink: #181818; --muted: #555; --card-bg: #ffffff; --border: #e6e4de; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 56px 24px 96px; }
+  .mast { font-size: 11px; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; }
+  h1 { font-size: 52px; line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 12px; }
+  h1 em { font-style: normal; color: #c03f5c; }
+  p.sub { font-size: 19px; color: var(--muted); margin: 0 0 20px; line-height: 1.5; max-width: 760px; }
+  .stats { display: flex; gap: 28px; margin: 24px 0 44px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+  .stats b { color: var(--ink); font-size: 22px; display: block; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .card { display: block; text-decoration: none; color: inherit; background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px 18px; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.08); border-color: #ccc7bb; }
+  .card .tag { display: inline-block; font-size: 10px; font-weight: 600; color: white; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .card h3 { margin: 0 0 10px; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+  .card p { margin: 0 0 12px; font-size: 14px; color: var(--muted); line-height: 1.55; }
+  .card .arrow { font-size: 12px; color: #888; }
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 760px; }
+  footer code { background: #efece6; padding: 2px 5px; border-radius: 3px; font-size: 12px; }
+  @media (max-width: 680px) { h1 { font-size: 40px; } p.sub { font-size: 17px; } }
+</style></head>
+<body><div class="wrap">
+
+<div class="mast">Toronto open data · 2025 · a ride through 7.8M bike-share trips</div>
+<h1>What Bike Share Toronto <em>reveals</em>.</h1>
+<p class="sub">Thirteen maps and analyses, built from the City's public ridership data and the live GBFS station feed, that make visible the things the raw CSVs only hint at — where people commute, where the city plays, where bike lanes are missing (and where the City's plans don't yet cover them), and where a single bicycle spent its year.</p>
+
+<div class="stats">
+  <div><b>7,812,520</b>trips in 2025</div>
+  <div><b>1,030</b>active stations</div>
+  <div><b>9,534</b>unique bikes</div>
+  <div><b>45/50</b>top gap routes not in any plan</div>
+  <div><b>2,017</b>bikes at peak moment</div>
+</div>
+
+<div class="grid">
+    <a class="card tag-story" href="story.html">
+      <div class="tag" style="background:#c03f5c;">story</div>
+      <h3>Where Toronto needs bike lanes</h3>
+      <p>A policy finding: mined from 7.8 million rides, the routes cyclists ride heavily with no protected bike lane cluster in the West End. A full story page including the plan comparison.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-policy" href="gap_vs_plans_map.html">
+      <div class="tag" style="background:#c03f5c;">policy</div>
+      <h3>45 of 50 gaps not in any plan</h3>
+      <p>Overlaying the gap routes with the City's near-term + 10-year cycling plans. Magenta arcs are orphans not covered by anything built or planned.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-policy" href="infra_gap_map.html">
+      <div class="tag" style="background:#c03f5c;">policy</div>
+      <h3>Infrastructure gap map</h3>
+      <p>Top 50 high-demand routes with no protected bike lane, over the City's existing cycling network. West End dominates.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-infra" href="desire_lines_map.html">
+      <div class="tag" style="background:#2f6fb0;">infra</div>
+      <h3>Desire lines</h3>
+      <p>Top 120 station pairs where rides exceed a gravity-model baseline. Recovers Toronto's bike infrastructure from ride patterns.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-urbanism" href="character_map.html">
+      <div class="tag" style="background:#5c41a8;">urbanism</div>
+      <h3>Station character</h3>
+      <p>3D columns: each station coloured by functional character (residential / workplace / nightlife / weekend-leisure / balanced). Height = annual volume.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-urbanism" href="commuter_gradient_map.html">
+      <div class="tag" style="background:#5c41a8;">urbanism</div>
+      <h3>Commuter gradient</h3>
+      <p>Every station placed on a continuous red↔blue diverging scale by its morning-outflow / evening-outflow ratio. A map of home-vs-work across Toronto.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-commute" href="commute_dipoles_map.html">
+      <div class="tag" style="background:#2f6fb0;">commute</div>
+      <h3>Commute dipoles</h3>
+      <p>Directed arrows from morning source (red) to morning destination (blue) for the top-60 commute pairs. King West → Financial District dominates.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-network" href="communities_map.html">
+      <div class="tag" style="background:#2f6fb0;">network</div>
+      <h3>Bike neighbourhoods</h3>
+      <p>Six communities found by Louvain detection on the station-to-station graph. Downtown splits into three functional zones; outer Toronto is one-per-direction.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-flow" href="flow_map.html">
+      <div class="tag" style="background:#2f6fb0;">flow</div>
+      <h3>Flow map (member vs casual)</h3>
+      <p>Top one-way OD pairs with arc thickness by volume. Member trips (blue) favor downtown core; casual trips (orange) favour waterfront and Islands.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-artistic" href="bike_biographies.html">
+      <div class="tag" style="background:#d88527;">artistic</div>
+      <h3>Six bikes, one Toronto year</h3>
+      <p>Six individual bicycles picked for different qualities (Workhorse, Wanderer, Island Bike, …). Every arc is one of their real rides, coloured by day of year.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-artistic" href="peak_moment.html">
+      <div class="tag" style="background:#d88527;">artistic</div>
+      <h3>Toronto's peak moment — 1,587 bikes at once</h3>
+      <p>Saturday, June 2025, 7:18 PM. The single most crowded second of 2025: every bike currently in flight shown with its trail.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-artistic" href="pulse_map.html">
+      <div class="tag" style="background:#d88527;">artistic</div>
+      <h3>The Pulse of Toronto</h3>
+      <p>Every Bike Share ride on Wednesday Jul 23, 2025 (the busiest weekday of the year, 40k+ trips) animated as moving dots, compressed into a short loop.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+    <a class="card tag-method" href="infra_validation_map.html">
+      <div class="tag" style="background:#6a7280;">method</div>
+      <h3>Desire lines vs. existing bike lanes</h3>
+      <p>Top desire arcs (colour = lane coverage) overlaid on the City's protected bike-lane network in green. The hypothesis-test that flipped into the gap story.</p>
+      <div class="arrow">→ open map</div>
+    </a>
+</div>
+
+<footer>
+  <b>About.</b> Data from the <a href="https://open.toronto.ca">City of Toronto Open Data Portal</a> (CKAN API) and the GBFS feed at bikesharetoronto.com. Built in Python with DuckDB, pandas, GeoPandas, NetworkX, pydeck, and deck.gl. Source notebooks in <code>notebooks/</code>; every map here is reproducible from <code>uv sync &amp;&amp; uv run jupyter lab</code>.<br><br>
+  <b>One data gotcha worth flagging.</b> The <code>End_Station_Name</code> column in the ridership CSVs is unreliable — it often echoes <code>Start_Station_Name</code> rather than the true destination. All analyses here join by <code>End_Station_Id</code> against the GBFS station feed to recover the correct coordinates.<br><br>
+  Unaffiliated with Bike Share Toronto, PBSC Urban Solutions, or the City of Toronto.
+</footer>
+
+</div></body></html>

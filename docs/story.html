@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Where Toronto needs bike lanes — mined from 7.8 million rides</title>
+<style>
+  html, body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif; color: #1d1d1f; background: #fafafa; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 24px 80px; }
+  h1 { font-size: 44px; font-weight: 700; line-height: 1.1; margin: 0 0 8px; letter-spacing: -0.01em; }
+  h2 { font-size: 28px; font-weight: 600; margin: 56px 0 12px; letter-spacing: -0.005em; }
+  h3 { font-size: 20px; font-weight: 600; margin: 28px 0 8px; }
+  p.sub { font-size: 20px; color: #555; margin: 0 0 36px; line-height: 1.45; }
+  p { font-size: 17px; line-height: 1.6; margin: 0 0 16px; color: #222; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 30px 0 20px; }
+  .stat { background: white; border: 1px solid #e6e6e6; border-radius: 10px; padding: 18px 18px; }
+  .stat .num { font-size: 30px; font-weight: 700; color: #b32340; letter-spacing: -0.02em; }
+  .stat .lbl { font-size: 14px; color: #555; margin-top: 6px; }
+  iframe { width: 100%; height: 560px; border: 1px solid #e0e0e0; border-radius: 12px; background: #eee; box-shadow: 0 3px 14px rgba(0,0,0,0.07); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; background: white; border-radius: 10px; overflow: hidden; border: 1px solid #e6e6e6; margin-top: 14px; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #efefef; }
+  th { background: #f6f6f6; font-weight: 600; font-size: 12.5px; color: #444; text-transform: uppercase; letter-spacing: 0.04em; }
+  td.num { font-variant-numeric: tabular-nums; text-align: right; }
+  td.cov { color: #b32340; font-weight: 600; }
+  .caption { font-size: 13px; color: #666; margin-top: 8px; }
+  .legend { display: flex; gap: 18px; font-size: 13px; color: #555; margin-top: 6px; }
+  .legend .sw { display: inline-block; width: 18px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: #eee; color: #555; text-transform: uppercase; letter-spacing: 0.06em; margin-right: 6px; }
+  footer { margin-top: 70px; padding-top: 20px; border-top: 1px solid #e0e0e0; font-size: 13px; color: #777; line-height: 1.55; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<span class="tag">Open-data analysis</span>
+<span class="tag">Toronto 2025</span>
+<h1>Where Toronto needs bike lanes</h1>
+<p class="sub">Mined from 7.8 million Bike Share Toronto rides, this map shows routes where cyclists ride far more than geography alone predicts — and where the city hasn't yet built a protected lane to support them.</p>
+
+<div class="stats">
+  <div class="stat"><div class="num">7.8M</div><div class="lbl">Bike Share trips in 2025</div></div>
+  <div class="stat"><div class="num">1,030</div><div class="lbl">Active stations</div></div>
+  <div class="stat"><div class="num">45/50</div><div class="lbl">top gap routes with no protection built or planned</div></div>
+</div>
+
+<h2>1. The desire lines</h2>
+<p>A simple gravity model says trips between two stations should scale with the product of their dock capacities divided by the square of their distance (fitted α = 1.59 on 2025 data). Pairs where the actual ride count <em>wildly</em> exceeds that baseline are the city's <strong>desire lines</strong> — routes pulling cyclists disproportionately. Most of the top desire lines trace Toronto's existing protected infrastructure: the Martin Goodman Trail, the Bloor bike lane, the Adelaide bike lane, the Don Valley trail, King Street West.</p>
+<iframe src="desire_lines_map.html" title="Desire lines map"></iframe>
+<p class="caption">Top 120 over-performing station pairs. Arc thickness = trip volume; colour intensity = affinity score (actual/expected).</p>
+
+<h2>2. The infrastructure gap</h2>
+<p>Now flip the question: which high-affinity routes have <em>no</em> protected infrastructure? Filtering to pairs with ≥400 trips/year, top-25% affinity, and less than 20% of the straight-line path within 50m of a protected bike lane or cycle track returns <strong>50 candidate gaps</strong>. They cluster overwhelmingly in Toronto's West End — Mimico, Humber Bay, Parkdale, Roncesvalles, Liberty Village, High Park, and the Bathurst corridor up to St. Clair. These are routes cyclists are riding heavily without a safe lane to do it on.</p>
+<iframe src="infra_gap_map.html" title="Infrastructure gap map"></iframe>
+<p class="caption">Red arcs: top gap pairs (high affinity, low lane coverage). Green lines: existing protected infrastructure from the City's Cycling Network dataset.</p>
+<div class="legend"><span><span class="sw" style="background:#dc2332;"></span>Desire-line gap (no lane)</span><span><span class="sw" style="background:#1e8c46;"></span>Existing protected lane</span></div>
+
+<h2>3. Do the City's plans already cover the gap?</h2>
+<p>The obvious next question: is the City already planning to fix these routes? I pulled three planning datasets — the near-term 2025–2027 Programmed Cycling Projects, the 2022–2024 program just completed, and the original 10-Year Cycling Network Plan from 2016 — kept only committed protected facilities (cycle tracks, bike lanes, multi-use trails, bridges; dropped "Study or Design", "Signed and marked route", "Quiet Street"), and measured how much of each gap route the union of all plans covers.</p>
+<p><strong>The plans barely touch the gaps.</strong> Of the top 50 gap routes, only <strong>5 have ≥ 30% coverage</strong> across built and planned infrastructure combined — and <strong>45 are "orphan" gaps, with less than 15% combined coverage</strong>. Adding every committed plan on top of everything that exists today lifts average coverage on these routes from 12% to just 23%. The worst offender is <em>Windsor/Newcastle ↔ Grand Avenue Park</em> in Mimico: 3,229 trips a year, 0% built, 0% planned.</p>
+<iframe src="gap_vs_plans_map.html" title="Gap vs. plans"></iframe>
+<p class="caption">Magenta arcs are "orphan" gaps (high-demand, not built, not planned). Red arcs are gaps covered ≥ 30% by current plans. Green lines: built protected infrastructure. Amber lines: planned infrastructure (all committed plans unioned).</p>
+
+<h3>15 orphan routes — top by trip volume</h3>
+<p>These are the strongest candidates for new cycling infrastructure that the 2025–2027 plan has not yet scheduled.</p>
+<table>
+  <thead>
+    <tr><th>Station A</th><th>Station B</th><th>Trips/yr</th><th>Dist (km)</th><th>Affinity</th><th>Built cov.</th><th>Plan cov.</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Windsor St / Newcastle St</td><td>Grand Avenue Park</td><td class="num">3,229</td><td class="num">0.9</td><td class="num">23×</td><td class="num cov">0%</td><td class="num cov">0%</td></tr>
+    <tr><td>College St / Major St</td><td>Robert St / Bloor St W - SMART</td><td class="num">1,923</td><td class="num">0.9</td><td class="num">36×</td><td class="num cov">13%</td><td class="num cov">14%</td></tr>
+    <tr><td>Windsor St / Newcastle St</td><td>36 Park Lawn Rd</td><td class="num">1,781</td><td class="num">1.3</td><td class="num">33×</td><td class="num cov">0%</td><td class="num cov">16%</td></tr>
+    <tr><td>Union Station</td><td>Front St W / Blue Jays Way</td><td class="num">1,755</td><td class="num">0.8</td><td class="num">19×</td><td class="num cov">12%</td><td class="num cov">22%</td></tr>
+    <tr><td>Dundas St E / Regent Park Blvd</td><td>Yonge St / Dundas Sq</td><td class="num">1,656</td><td class="num">1.6</td><td class="num">24×</td><td class="num cov">17%</td><td class="num cov">7%</td></tr>
+    <tr><td>Dundas St W / Yonge St</td><td>Dundas St E / Regent Park Blvd</td><td class="num">1,605</td><td class="num">1.7</td><td class="num">25×</td><td class="num cov">17%</td><td class="num cov">12%</td></tr>
+    <tr><td>Union Station</td><td>Front St W / Spadina Ave</td><td class="num">1,580</td><td class="num">1.2</td><td class="num">15×</td><td class="num cov">16%</td><td class="num cov">23%</td></tr>
+    <tr><td>King St W / Portland St </td><td>Simcoe St / King St W</td><td class="num">1,486</td><td class="num">1.2</td><td class="num">25×</td><td class="num cov">13%</td><td class="num cov">22%</td></tr>
+    <tr><td>College St / Huron St</td><td>Soho St / Queen St W</td><td class="num">1,268</td><td class="num">1.0</td><td class="num">27×</td><td class="num cov">14%</td><td class="num cov">6%</td></tr>
+    <tr><td>Soho St / Queen St W</td><td>Baldwin St / Spadina Ave - SMART</td><td class="num">1,159</td><td class="num">0.7</td><td class="num">12×</td><td class="num cov">4%</td><td class="num cov">3%</td></tr>
+    <tr><td>Yonge St / Dundas Sq</td><td>Shuter St/River St</td><td class="num">1,039</td><td class="num">1.8</td><td class="num">33×</td><td class="num cov">10%</td><td class="num cov">12%</td></tr>
+    <tr><td>Lisgar Park</td><td>King St W / Portland St </td><td class="num">936</td><td class="num">1.9</td><td class="num">14×</td><td class="num cov">5%</td><td class="num cov">16%</td></tr>
+    <tr><td>Dundas St W / Yonge St</td><td>Dundas St E / Parliament St</td><td class="num">913</td><td class="num">1.3</td><td class="num">17×</td><td class="num cov">8%</td><td class="num cov">8%</td></tr>
+    <tr><td>College Park - Yonge St Entrance</td><td>Wellesley St E / Parliament St</td><td class="num">900</td><td class="num">1.4</td><td class="num">22×</td><td class="num cov">20%</td><td class="num cov">24%</td></tr>
+    <tr><td>Marilyn Bell Park Tennis Court</td><td>Humber Bay Shores Park / Marine Parade Dr</td><td class="num">877</td><td class="num">3.3</td><td class="num">19×</td><td class="num cov">4%</td><td class="num cov">0%</td></tr>
+  </tbody>
+</table>
+
+<h2>4. Bonus: station character</h2>
+<p>Bike-share rhythms reveal what <em>kind of place</em> each station is — residential (morning outflow, evening return), workplace (morning arrivals), weekend leisure, nightlife, or balanced hub. The clearest examples: Polson Pier is the city's strongest nightlife station (46% of weekday trips happen after 8pm, thanks to the nightclubs on the pier); King / Bay in the Financial District is the deepest workplace (commuter score −66%); the Brick Works sees 3× more bike traffic on weekends than weekdays.</p>
+<iframe src="character_map.html" title="Station character 3D map"></iframe>
+<p class="caption">3D column map. Height = annual trip volume. Colour = functional character.</p>
+
+<footer>
+<strong>Method.</strong> 2025 trip-level data pulled from the <a href="https://open.toronto.ca">City of Toronto Open Data Portal</a>. Station coordinates from the GBFS feed at bikesharetoronto.com. Protected bike-lane geometry from the City's Cycling Network dataset (GeoJSON, EPSG:4326, March 2026). OD aggregation and gravity fit in DuckDB + pandas; spatial overlay in GeoPandas (EPSG:2952, 50m buffer).<br><br>
+<strong>Caveats.</strong> Straight-line A→B is a proxy for the real ride path; a routing engine would give a stricter lane-coverage measure. The gravity baseline uses dock capacity as mass; it under-predicts trips to parks and transit hubs, so some "leisure" destinations show inflated affinity. Findings are descriptive — they identify where to <em>look</em> for missing infrastructure, not a causal claim about where bike lanes would most help.<br><br>
+<strong>Data gotcha worth documenting.</strong> The <code>End_Station_Name</code> column in the ridership CSVs is unreliable — it frequently echoes <code>Start_Station_Name</code> instead of the actual destination. All analyses here join by <code>End_Station_Id</code> against the GBFS station feed to recover true coordinates and names.<br><br>
+Not affiliated with Bike Share Toronto or the City of Toronto.
+</footer>
+
+</div>
+</body>
+</html>

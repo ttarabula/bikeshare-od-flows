@@ -1,0 +1,25 @@
+# uv / python
+.venv/
+__pycache__/
+*.py[cod]
+.python-version
+
+# data (not checked in — pull fresh from open.toronto.ca)
+data/raw/
+data/processed/
+data/interim/
+*.parquet
+*.duckdb
+
+# jupyter
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# editor / os
+.DS_Store
+.vscode/
+.idea/
+
+# Tyler's private project context (not for public repo)
+CLAUDE.md
+.claude/

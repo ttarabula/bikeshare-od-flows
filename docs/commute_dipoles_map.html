@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.14.0/dist/maplibre-gl.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~9.2.*/dist/index.js'></script>
+    <link rel="stylesheet" href=https://cdn.jsdelivr.net/npm/@deck.gl/widgets@~9.2.*/dist/stylesheet.css />
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+
+#deck-container .error_text {
+  color: red;
+  background: none;
+  position: absolute;
+  z-index: 100;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  
+<style id="legend-style">
+  .legend-box {
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #181818;
+    max-width: 280px;
+  }
+  .legend-box.dark {
+    background: rgba(12, 16, 24, 0.82);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #e5e5e5;
+  }
+  .legend-box h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .legend-row {
+    display: flex;
+    align-items: center;
+    margin: 4px 0;
+    font-size: 12.5px;
+  }
+  .legend-sw {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    margin-right: 9px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.12);
+  }
+  .legend-sw.circle { border-radius: 50%; }
+  .legend-sw.line   { height: 4px; margin-top: 6px; margin-bottom: 6px; }
+  .legend-sw.arc    { height: 3px; background: linear-gradient(90deg, var(--l) 0%, var(--r) 100%); margin-top: 6px; margin-bottom: 6px; }
+  .legend-note {
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: #555;
+    line-height: 1.35;
+  }
+  .legend-box.dark .legend-note { color: #aab4c4; }
+  .legend-gradient {
+    height: 10px;
+    width: 100%;
+    border-radius: 5px;
+    margin: 6px 0 3px;
+  }
+  .legend-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 4px;
+  }
+  .legend-box.dark .legend-scale { color: #aab4c4; }
+</style>
+<div class="legend-box"><h4>Morning commute arcs</h4><div class="legend-row"><span class="legend-sw arc" style="--l:rgb(220,70,70); --r:rgb(30,110,210);"></span><span>arc source → target = AM flow direction</span></div><div class="legend-row"><span class="legend-sw circle" style="background:rgb(220,70,70);"></span><span>Morning source (residential)</span></div><div class="legend-row"><span class="legend-sw circle" style="background:rgb(30,110,210);"></span><span>Morning destination (workplace)</span></div><div class="legend-note">Top 60 station pairs where morning A→B and evening B→A are both strongly asymmetric. Width ∝ log(morning trips).</div></div>
+</body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "bearing": -12,
+    "latitude": 43.65,
+    "longitude": -79.395,
+    "pitch": 50,
+    "zoom": 12.8
+  },
+  "layers": [
+    {
+      "@@type": "ScatterplotLayer",
+      "data": [
+        {
+          "from_lat": 43.639832,
+          "from_lon": -79.395954,
+          "from_name": "Fort York  Blvd / Capreol Ct",
+          "radius": 57.282196186948,
+          "total_am": 525
+        },
+        {
+          "from_lat": 43.660439,
+          "from_lon": -79.385525,
+          "from_name": "Bay St / College St (East Side)",
+          "radius": 30.413812651491096,
+          "total_am": 148
+        },
+        {
+          "from_lat": 43.647547634759206,
+          "from_lon": -79.39155200496292,
+          "from_name": "Widmer St / Adelaide St W - SMART",
+          "radius": 64.17748826496718,
+          "total_am": 659
+        },
+        {
+          "from_lat": 43.64534,
+          "from_lon": -79.409597,
+          "from_name": "Niagara St / Richmond St W",
+          "radius": 55.17019122678477,
+          "total_am": 487
+        },
+        {
+          "from_lat": 43.660207,
+          "from_lon": -79.361275,
+          "from_name": "Dundas St E / Regent Park Blvd",
+          "radius": 57.336724705898575,
+          "total_am": 526
+        },
+        {
+          "from_lat": 43.648711,
+          "from_lon": -79.389728,
+          "from_name": "Nelson St / Duncan St",
+          "radius": 45.62071897723665,
+          "total_am": 333
+        },
+        {
+          "from_lat": 43.656784782853144,
+          "from_lon": -79.35627385059036,
+          "from_name": "King St E / River St",
+          "radius": 34.910600109422354,
+          "total_am": 195
+        },
+        {
+          "from_lat": 43.640885,
+          "from_lon": -79.416379,
+          "from_name": "King St W / Douro St",
+          "radius": 37.080992435478315,
+          "total_am": 220
+        },
+        {
+          "from_lat": 43.643834,
+          "from_lon": -79.396649,
+          "from_name": "420 Wellington St W",
+          "radius": 76.28073151196179,
+          "total_am": 931
+        },
+        {
+          "from_lat": 43.64333333333333,
+          "from_lon": -79.40555555555557,
+          "from_name": "King St W / Tecumseth St",
+          "radius": 57.60859310901456,
+          "total_am": 531
+        },
+        {
+          "from_lat": 43.639179,
+          "from_lon": -79.399595,
+          "from_name": "Bathurst St / Fort York Blvd",
+          "radius": 37.99671038392666,
+          "total_am": 231
+        },
+        {
+          "from_lat": 43.649722,
+          "from_lon": -79.416944,
+          "from_name": "Dundas St W / Crawford St",
+          "radius": 41.68333000133266,
+          "total_am": 278
+        },
+        {
+          "from_lat": 43.6409957,
+          "from_lon": -79.40966630000001,
+          "from_name": "Wellington St W / Stafford St",
+          "radius": 55.39629951540085,
+          "total_am": 491
+        },
+        {
+          "from_lat": 43.6472019,
+          "from_lon": -79.3953394,
+          "from_name": "Spadina Ave / Adelaide St W",
+          "radius": 74.37237390321758,
+          "total_am": 885
+        },
+        {
+          "from_lat": 43.64542671204133,
+          "from_lon": -79.36520838800558,
+          "from_name": "190 Queens Quay E",
+          "radius": 41.53311931459037,
+          "total_am": 276
+        },
+        {
+          "from_lat": 43.645324,
+          "from_lon": -79.40345,
+          "from_name": "Bathurst St / Adelaide St W",
+          "radius": 47.103609203541936,
+          "total_am": 355
+        },
+        {
+          "from_lat": 43.6452972,
+          "from_lon": -79.3827914,
+          "from_name": "Front St W / University Ave (2)",
+          "radius": 41.4578098794425,
+          "total_am": 275
+        },
+        {
+          "from_lat": 43.6392777,
+          "from_lon": -79.4115736,
+          "from_name": "East Liberty St / Western Battery Rd",
+          "radius": 35.79455265819088,
+          "total_am": 205
+        },
+        {
+          "from_lat": 43.645572,
+          "from_lon": -79.39399,
+          "from_name": "King St W / Charlotte St",
+          "radius": 90.89829481348922,
+          "total_am": 1322
+        },
+        {
+          "from_lat": 43.639052,
+          "from_lon": -79.399792,
+          "from_name": "Fort York Blvd / Bathurst St - SMART",
+          "radius": 48.08846015417836,
+          "total_am": 370
+        },
+        {
+          "from_lat": 43.635023,
+          "from_lon": -79.399505,
+          "from_name": "Little Norway Park",
+          "radius": 42.720018726587654,
+          "total_am": 292
+        },
+        {
+          "from_lat": 43.6417852,
+          "from_lon": -79.4131148,
+          "from_name": "King St W / Crawford St",
+          "radius": 55.90169943749474,
+          "total_am": 500
+        },
+        {
+          "from_lat": 43.641705,
+          "from_lon": -79.393295,
+          "from_name": "Spadina Ave / Blue Jays Way",
+          "radius": 40.46603514059662,
+          "total_am": 262
+        },
+        {
+          "from_lat": 43.651118,
+          "from_lon": -79.369411,
+          "from_name": "Frederick St / King St E",
+          "radius": 69.37218462755804,
+          "total_am": 770
+        },
+        {
+          "from_lat": 43.640075,
+          "from_lon": -79.414156,
+          "from_name": "Western Battery Rd / Pirandello St",
+          "radius": 61.69481339626533,
+          "total_am": 609
+        },
+        {
+          "from_lat": 43.653809,
+          "from_lon": -79.3595,
+          "from_name": "Sackville St / Eastern Ave - SMART",
+          "radius": 39.05124837953327,
+          "total_am": 244
+        },
+        {
+          "from_lat": 43.6535052,
+          "from_lon": -79.3667689,
+          "from_name": "Ontario St / Adelaide St E -SMART",
+          "radius": 30.413812651491096,
+          "total_am": 148
+        },
+        {
+          "from_lat": 43.638925,
+          "from_lon": -79.4168659,
+          "from_name": "Lynn Williams St / East Liberty St",
+          "radius": 49.686517285879475,
+          "total_am": 395
+        },
+        {
+          "from_lat": 43.6423847,
+          "from_lon": -79.4240277,
+          "from_name": "Lisgar Park",
+          "radius": 45.552167895721496,
+          "total_am": 332
+        },
+        {
+          "from_lat": 43.651603,
+          "from_lon": -79.408346,
+          "from_name": "Palmerston Ave / Dundas St W",
+          "radius": 39.52847075210474,
+          "total_am": 250
+        },
+        {
+          "from_lat": 43.64134790000001,
+          "from_lon": -79.4013882,
+          "from_name": "Bathurst St / Front St W",
+          "radius": 68.2367203197809,
+          "total_am": 745
+        },
+        {
+          "from_lat": 43.645102,
+          "from_lon": -79.39744979999999,
+          "from_name": "King St W / Brant St",
+          "radius": 68.05328794408099,
+          "total_am": 741
+        },
+        {
+          "from_lat": 43.654919677554936,
+          "from_lon": -79.374960865926,
+          "from_name": "Mutual St / Shuter St",
+          "radius": 38.81043674065006,
+          "total_am": 241
+        },
+        {
+          "from_lat": 43.646552,
+          "from_lon": -79.399586,
+          "from_name": "St. Andrew's Playground Park",
+          "radius": 40.15594601052253,
+          "total_am": 258
+        },
+        {
+          "from_lat": 43.644395,
+          "from_lon": -79.40065430000001,
+          "from_name": "King St W / Portland St ",
+          "radius": 93.54143466934855,
+          "total_am": 1400
+        },
+        {
+          "from_lat": 43.6463574,
+          "from_lon": -79.391206,
+          "from_name": "Widmer St / King St W",
+          "radius": 42.573465914816005,
+          "total_am": 290
+        },
+        {
+          "from_lat": 43.62369169999999,
+          "from_lon": -79.4838132,
+          "from_name": "36 Park Lawn Rd",
+          "radius": 56.124860801609124,
+          "total_am": 504
+        },
+        {
+          "from_lat": 43.623708,
+          "from_lon": -79.490054,
+          "from_name": "Grand Avenue Park",
+          "radius": 73.14369419163897,
+          "total_am": 856
+        },
+        {
+          "from_lat": 43.639124514797004,
+          "from_lon": -79.41423166721611,
+          "from_name": "Lynn Williams St / Pirandello St ",
+          "radius": 41.53311931459037,
+          "total_am": 276
+        },
+        {
+          "from_lat": 43.661152,
+          "from_lon": -79.358505,
+          "from_name": "Dundas St E / River St",
+          "radius": 34.18698582794336,
+          "total_am": 187
+        },
+        {
+          "from_lat": 43.6412561641921,
+          "from_lon": -79.41502994047545,
+          "from_name": "Shaw St / King St W",
+          "radius": 38.242646351945886,
+          "total_am": 234
+        },
+        {
+          "from_lat": 43.6460145694434,
+          "from_lon": -79.39960497726345,
+          "from_name": "Maud St / Adelaide St W - SMART",
+          "radius": 50.7444578254611,
+          "total_am": 412
+        },
+        {
+          "from_lat": 43.64039672322004,
+          "from_lon": -79.4237424131447,
+          "from_name": "Joe Shuster Way / King St W ",
+          "radius": 62.79928343540235,
+          "total_am": 631
+        },
+        {
+          "from_lat": 43.64281323408372,
+          "from_lon": -79.40751415588915,
+          "from_name": "Niagara St / King St W - SMART",
+          "radius": 56.236109396009965,
+          "total_am": 506
+        },
+        {
+          "from_lat": 43.63906470236988,
+          "from_lon": -79.41080996164456,
+          "from_name": "Strachan Ave / East Liberty St - SMART",
+          "radius": 47.36823830374104,
+          "total_am": 359
+        },
+        {
+          "from_lat": 43.64290167152932,
+          "from_lon": -79.39937033134326,
+          "from_name": "Portland St / Wellington St W",
+          "radius": 48.925964476952316,
+          "total_am": 383
+        },
+        {
+          "from_lat": 43.64666748425228,
+          "from_lon": -79.40299591349182,
+          "from_name": "Richmond St W / Bathurst St",
+          "radius": 52.08166663999915,
+          "total_am": 434
+        },
+        {
+          "from_lat": 43.63781903961206,
+          "from_lon": -79.40013176752855,
+          "from_name": "Bathurst St / Housey St",
+          "radius": 44.791182167922294,
+          "total_am": 321
+        },
+        {
+          "from_lat": 43.63758782904466,
+          "from_lon": -79.40314232209015,
+          "from_name": "Fort York Blvd / Grand Magazine St",
+          "radius": 50.37360419902471,
+          "total_am": 406
+        }
+      ],
+      "getFillColor": [
+        220,
+        70,
+        70,
+        160
+      ],
+      "getLineColor": [
+        140,
+        20,
+        20,
+        220
+      ],
+      "getPosition": "@@=[from_lon, from_lat]",
+      "getRadius": "@@=radius",
+      "id": "393ebc09-940f-4acf-a336-bb148f93330a",
+      "lineWidthMinPixels": 1.0,
+      "pickable": true,
+      "stroked": true
+    },
+    {
+      "@@type": "ScatterplotLayer",
+      "data": [
+        {
+          "arrow_count": 31,
+          "radius": 220.0,
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "to_name": "King St W / Bay St (West Side)",
+          "total_am": 13826
+        },
+        {
+          "arrow_count": 1,
+          "radius": 45.59605246071199,
+          "to_lat": 43.641529,
+          "to_lon": -79.386741,
+          "to_name": "Bremner Blvd / Rees St",
+          "total_am": 231
+        },
+        {
+          "arrow_count": 19,
+          "radius": 217.0806301815065,
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "to_name": "Temperance St Station",
+          "total_am": 5236
+        },
+        {
+          "arrow_count": 2,
+          "radius": 68.14690014960328,
+          "to_lat": 43.657763,
+          "to_lon": -79.389165,
+          "to_name": "University Ave / Gerrard St W (East Side)",
+          "total_am": 516
+        },
+        {
+          "arrow_count": 1,
+          "radius": 45.2990066116245,
+          "to_lat": 43.647259,
+          "to_lon": -79.379878,
+          "to_name": "Wellington St W / Bay St",
+          "total_am": 228
+        },
+        {
+          "arrow_count": 1,
+          "radius": 51.26402247190518,
+          "to_lat": 43.640132,
+          "to_lon": -79.380464,
+          "to_name": "York St / Queens Quay W",
+          "total_am": 292
+        },
+        {
+          "arrow_count": 1,
+          "radius": 40.0,
+          "to_lat": 43.651838,
+          "to_lon": -79.378743,
+          "to_name": "Richmond St E / Yonge St",
+          "total_am": 148
+        },
+        {
+          "arrow_count": 2,
+          "radius": 110.63453348751464,
+          "to_lat": 43.6171635,
+          "to_lon": -79.4971065,
+          "to_name": "Windsor St / Newcastle St",
+          "total_am": 1360
+        },
+        {
+          "arrow_count": 1,
+          "radius": 41.02438299353203,
+          "to_lat": 43.6570908165693,
+          "to_lon": -79.38593668834272,
+          "to_name": "Elizabeth St / Elm St",
+          "total_am": 187
+        },
+        {
+          "arrow_count": 1,
+          "radius": 42.95346318982906,
+          "to_lat": 43.645649620032444,
+          "to_lon": -79.38116314068574,
+          "to_name": "Union Station (North)",
+          "total_am": 205
+        }
+      ],
+      "getFillColor": [
+        30,
+        110,
+        210,
+        180
+      ],
+      "getLineColor": [
+        10,
+        50,
+        120,
+        230
+      ],
+      "getPosition": "@@=[to_lon, to_lat]",
+      "getRadius": "@@=radius",
+      "id": "de7e7ed5-ff38-4908-95cf-45608576bf2e",
+      "lineWidthMinPixels": 1.5,
+      "pickable": true,
+      "stroked": true
+    },
+    {
+      "@@type": "ArcLayer",
+      "autoHighlight": true,
+      "data": [
+        {
+          "am_trips": 1123,
+          "dipole_r": 291.4,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.644395,
+          "from_lon": -79.40065430000001,
+          "pair_label": "King St W / Portland St  \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 529,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 10.0
+        },
+        {
+          "am_trips": 504,
+          "dipole_r": 209.6,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.62369169999999,
+          "from_lon": -79.4838132,
+          "pair_label": "36 Park Lawn Rd \u2192 Windsor St / Newcastle St",
+          "pm_reverse": 567,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.6171635,
+          "to_lon": -79.4971065,
+          "width": 9.33683764391304
+        },
+        {
+          "am_trips": 745,
+          "dipole_r": 205.4,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64134790000001,
+          "from_lon": -79.4013882,
+          "pair_label": "Bathurst St / Front St W \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 318,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.92208840030564
+        },
+        {
+          "am_trips": 856,
+          "dipole_r": 189.1,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.623708,
+          "from_lon": -79.490054,
+          "pair_label": "Grand Avenue Park \u2192 Windsor St / Newcastle St",
+          "pm_reverse": 712,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.6171635,
+          "to_lon": -79.4971065,
+          "width": 10.0
+        },
+        {
+          "am_trips": 1094,
+          "dipole_r": 188.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.645572,
+          "from_lon": -79.39399,
+          "pair_label": "King St W / Charlotte St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 329,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 10.0
+        },
+        {
+          "am_trips": 500,
+          "dipole_r": 181.4,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6417852,
+          "from_lon": -79.4131148,
+          "pair_label": "King St W / Crawford St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 299,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.324909151627297
+        },
+        {
+          "am_trips": 526,
+          "dipole_r": 155.2,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.660207,
+          "from_lon": -79.361275,
+          "pair_label": "Dundas St E / Regent Park Blvd \u2192 Temperance St Station",
+          "pm_reverse": 234,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 9.400800822812045
+        },
+        {
+          "am_trips": 548,
+          "dipole_r": 149.9,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6472019,
+          "from_lon": -79.3953394,
+          "pair_label": "Spadina Ave / Adelaide St W \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 231,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.462147662264297
+        },
+        {
+          "am_trips": 491,
+          "dipole_r": 146.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6409957,
+          "from_lon": -79.40966630000001,
+          "pair_label": "Wellington St W / Stafford St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 231,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.297718074738462
+        },
+        {
+          "am_trips": 355,
+          "dipole_r": 143.6,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.645324,
+          "from_lon": -79.40345,
+          "pair_label": "Bathurst St / Adelaide St W \u2192 Temperance St Station",
+          "pm_reverse": 279,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.812396096278047
+        },
+        {
+          "am_trips": 746,
+          "dipole_r": 142.6,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.643834,
+          "from_lon": -79.396649,
+          "pair_label": "420 Wellington St W \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 206,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.924097777699226
+        },
+        {
+          "am_trips": 333,
+          "dipole_r": 142.1,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.648711,
+          "from_lon": -79.389728,
+          "pair_label": "Nelson St / Duncan St \u2192 Temperance St Station",
+          "pm_reverse": 309,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.716711489465052
+        },
+        {
+          "am_trips": 506,
+          "dipole_r": 140.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64281323408372,
+          "from_lon": -79.40751415588915,
+          "pair_label": "Niagara St / King St W - SMART \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 216,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.342766505386775
+        },
+        {
+          "am_trips": 258,
+          "dipole_r": 136.8,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.646552,
+          "from_lon": -79.399586,
+          "pair_label": "St. Andrew's Playground Park \u2192 Temperance St Station",
+          "pm_reverse": 326,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.335242092549306
+        },
+        {
+          "am_trips": 412,
+          "dipole_r": 134.6,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6460145694434,
+          "from_lon": -79.39960497726345,
+          "pair_label": "Maud St / Adelaide St W - SMART \u2192 Temperance St Station",
+          "pm_reverse": 263,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 9.03517138944155
+        },
+        {
+          "am_trips": 278,
+          "dipole_r": 129.8,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.647547634759206,
+          "from_lon": -79.39155200496292,
+          "pair_label": "Widmer St / Adelaide St W - SMART \u2192 Temperance St Station",
+          "pm_reverse": 335,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.446817672732049
+        },
+        {
+          "am_trips": 406,
+          "dipole_r": 125.9,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.63758782904466,
+          "from_lon": -79.40314232209015,
+          "pair_label": "Fort York Blvd / Grand Magazine St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 193,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.013219778163892
+        },
+        {
+          "am_trips": 370,
+          "dipole_r": 122.9,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.639052,
+          "from_lon": -79.399792,
+          "pair_label": "Fort York Blvd / Bathurst St - SMART \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 188,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.874303093911152
+        },
+        {
+          "am_trips": 277,
+          "dipole_r": 119.4,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.644395,
+          "from_lon": -79.40065430000001,
+          "pair_label": "King St W / Portland St  \u2192 Temperance St Station",
+          "pm_reverse": 242,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.441431670535955
+        },
+        {
+          "am_trips": 276,
+          "dipole_r": 115.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.639124514797004,
+          "from_lon": -79.41423166721611,
+          "pair_label": "Lynn Williams St / Pirandello St  \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 240,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.436026259281007
+        },
+        {
+          "am_trips": 359,
+          "dipole_r": 112.4,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.63906470236988,
+          "from_lon": -79.41080996164456,
+          "pair_label": "Strachan Ave / East Liberty St - SMART \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 187,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.829156047175234
+        },
+        {
+          "am_trips": 320,
+          "dipole_r": 112.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.639832,
+          "from_lon": -79.395954,
+          "pair_label": "Fort York  Blvd / Capreol Ct \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 191,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.657161684695023
+        },
+        {
+          "am_trips": 381,
+          "dipole_r": 111.8,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.647547634759206,
+          "from_lon": -79.39155200496292,
+          "pair_label": "Widmer St / Adelaide St W - SMART \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 195,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.918130912909863
+        },
+        {
+          "am_trips": 278,
+          "dipole_r": 106.3,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.649722,
+          "from_lon": -79.416944,
+          "pair_label": "Dundas St W / Crawford St \u2192 Temperance St Station",
+          "pm_reverse": 185,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.446817672732049
+        },
+        {
+          "am_trips": 365,
+          "dipole_r": 105.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64534,
+          "from_lon": -79.409597,
+          "pair_label": "Niagara St / Richmond St W \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 161,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.85395000010205
+        },
+        {
+          "am_trips": 529,
+          "dipole_r": 105.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.645102,
+          "from_lon": -79.39744979999999,
+          "pair_label": "King St W / Brant St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 184,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.409315509819251
+        },
+        {
+          "am_trips": 609,
+          "dipole_r": 104.5,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.640075,
+          "from_lon": -79.414156,
+          "pair_label": "Western Battery Rd / Pirandello St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 136,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.620188435751036
+        },
+        {
+          "am_trips": 296,
+          "dipole_r": 103.7,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64039672322004,
+          "from_lon": -79.4237424131447,
+          "pair_label": "Joe Shuster Way / King St W  \u2192 Temperance St Station",
+          "pm_reverse": 161,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.540598208204049
+        },
+        {
+          "am_trips": 332,
+          "dipole_r": 103.4,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6423847,
+          "from_lon": -79.4240277,
+          "pair_label": "Lisgar Park \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 162,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.712213734970666
+        },
+        {
+          "am_trips": 337,
+          "dipole_r": 101.2,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6472019,
+          "from_lon": -79.3953394,
+          "pair_label": "Spadina Ave / Adelaide St W \u2192 Temperance St Station",
+          "pm_reverse": 195,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.734568843224528
+        },
+        {
+          "am_trips": 234,
+          "dipole_r": 99.6,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6412561641921,
+          "from_lon": -79.41502994047545,
+          "pair_label": "Shaw St / King St W \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 213,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.189378271216238
+        },
+        {
+          "am_trips": 473,
+          "dipole_r": 98.4,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.651118,
+          "from_lon": -79.369411,
+          "pair_label": "Frederick St / King St E \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 155,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.241810982542615
+        },
+        {
+          "am_trips": 205,
+          "dipole_r": 94.9,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6392777,
+          "from_lon": -79.4115736,
+          "pair_label": "East Liberty St / Western Battery Rd \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 223,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 7.991814253184372
+        },
+        {
+          "am_trips": 220,
+          "dipole_r": 94.9,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.640885,
+          "from_lon": -79.416379,
+          "pair_label": "King St W / Douro St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 187,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.09724405227663
+        },
+        {
+          "am_trips": 297,
+          "dipole_r": 93.2,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.651118,
+          "from_lon": -79.369411,
+          "pair_label": "Frederick St / King St E \u2192 Temperance St Station",
+          "pm_reverse": 190,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.545640229758106
+        },
+        {
+          "am_trips": 335,
+          "dipole_r": 92.5,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64039672322004,
+          "from_lon": -79.4237424131447,
+          "pair_label": "Joe Shuster Way / King St W  \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 143,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.725666739944806
+        },
+        {
+          "am_trips": 383,
+          "dipole_r": 90.2,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64290167152932,
+          "from_lon": -79.39937033134326,
+          "pair_label": "Portland St / Wellington St W \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 131,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.92596382888159
+        },
+        {
+          "am_trips": 262,
+          "dipole_r": 88.2,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.641705,
+          "from_lon": -79.393295,
+          "pair_label": "Spadina Ave / Blue Jays Way \u2192 Temperance St Station",
+          "pm_reverse": 151,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.358231048266648
+        },
+        {
+          "am_trips": 228,
+          "dipole_r": 88.1,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.645572,
+          "from_lon": -79.39399,
+          "pair_label": "King St W / Charlotte St \u2192 Wellington St W / Bay St",
+          "pm_reverse": 251,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.647259,
+          "to_lon": -79.379878,
+          "width": 8.15058300533136
+        },
+        {
+          "am_trips": 244,
+          "dipole_r": 88.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.653809,
+          "from_lon": -79.3595,
+          "pair_label": "Sackville St / Eastern Ave - SMART \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 152,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.251887315817092
+        },
+        {
+          "am_trips": 231,
+          "dipole_r": 87.9,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.639179,
+          "from_lon": -79.399595,
+          "pair_label": "Bathurst St / Fort York Blvd \u2192 Bremner Blvd / Rees St",
+          "pm_reverse": 234,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.641529,
+          "to_lon": -79.386741,
+          "width": 8.170106057499465
+        },
+        {
+          "am_trips": 290,
+          "dipole_r": 87.1,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6463574,
+          "from_lon": -79.391206,
+          "pair_label": "Widmer St / King St W \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 190,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.509984900757239
+        },
+        {
+          "am_trips": 321,
+          "dipole_r": 86.2,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.63781903961206,
+          "from_lon": -79.40013176752855,
+          "pair_label": "Bathurst St / Housey St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 136,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.661827318316613
+        },
+        {
+          "am_trips": 531,
+          "dipole_r": 84.7,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64333333333333,
+          "from_lon": -79.40555555555557,
+          "pair_label": "King St W / Tecumseth St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 198,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 9.414965234012467
+        },
+        {
+          "am_trips": 276,
+          "dipole_r": 84.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64542671204133,
+          "from_lon": -79.36520838800558,
+          "pair_label": "190 Queens Quay E \u2192 Temperance St Station",
+          "pm_reverse": 139,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.436026259281007
+        },
+        {
+          "am_trips": 185,
+          "dipole_r": 82.1,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.643834,
+          "from_lon": -79.396649,
+          "pair_label": "420 Wellington St W \u2192 Temperance St Station",
+          "pm_reverse": 186,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 7.8386200105698025
+        },
+        {
+          "am_trips": 212,
+          "dipole_r": 82.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.645102,
+          "from_lon": -79.39744979999999,
+          "pair_label": "King St W / Brant St \u2192 Temperance St Station",
+          "pm_reverse": 153,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.041938248564138
+        },
+        {
+          "am_trips": 241,
+          "dipole_r": 81.8,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.654919677554936,
+          "from_lon": -79.374960865926,
+          "pair_label": "Mutual St / Shuter St \u2192 University Ave / Gerrard St W (East Side)",
+          "pm_reverse": 148,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.657763,
+          "to_lon": -79.389165,
+          "width": 8.233406589235031
+        },
+        {
+          "am_trips": 292,
+          "dipole_r": 79.7,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.635023,
+          "from_lon": -79.399505,
+          "pair_label": "Little Norway Park \u2192 York St / Queens Quay W",
+          "pm_reverse": 368,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.640132,
+          "to_lon": -79.380464,
+          "width": 8.520258913525602
+        },
+        {
+          "am_trips": 275,
+          "dipole_r": 79.1,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6452972,
+          "from_lon": -79.3827914,
+          "pair_label": "Front St W / University Ave (2) \u2192 University Ave / Gerrard St W (East Side)",
+          "pm_reverse": 139,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.657763,
+          "to_lon": -79.389165,
+          "width": 8.430601298575723
+        },
+        {
+          "am_trips": 148,
+          "dipole_r": 75.8,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.6535052,
+          "from_lon": -79.3667689,
+          "pair_label": "Ontario St / Adelaide St E -SMART \u2192 Richmond St E / Yonge St",
+          "pm_reverse": 53,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.651838,
+          "to_lon": -79.378743,
+          "width": 7.505919458918189
+        },
+        {
+          "am_trips": 300,
+          "dipole_r": 75.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64666748425228,
+          "from_lon": -79.40299591349182,
+          "pair_label": "Richmond St W / Bathurst St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 110,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.560665397123312
+        },
+        {
+          "am_trips": 195,
+          "dipole_r": 75.0,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.656784782853144,
+          "from_lon": -79.35627385059036,
+          "pair_label": "King St E / River St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 148,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 7.917171988845775
+        },
+        {
+          "am_trips": 134,
+          "dipole_r": 74.9,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64666748425228,
+          "from_lon": -79.40299591349182,
+          "pair_label": "Richmond St W / Bathurst St \u2192 Temperance St Station",
+          "pm_reverse": 266,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 7.357912167657645
+        },
+        {
+          "am_trips": 148,
+          "dipole_r": 74.8,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.660439,
+          "from_lon": -79.385525,
+          "pair_label": "Bay St / College St (East Side) \u2192 Temperance St Station",
+          "pm_reverse": 176,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 7.505919458918189
+        },
+        {
+          "am_trips": 122,
+          "dipole_r": 74.1,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.64534,
+          "from_lon": -79.409597,
+          "pair_label": "Niagara St / Richmond St W \u2192 Temperance St Station",
+          "pm_reverse": 201,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 7.218276533058626
+        },
+        {
+          "am_trips": 187,
+          "dipole_r": 73.4,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.661152,
+          "from_lon": -79.358505,
+          "pair_label": "Dundas St E / River St \u2192 Elizabeth St / Elm St",
+          "pm_reverse": 135,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.6570908165693,
+          "to_lon": -79.38593668834272,
+          "width": 7.854662944244923
+        },
+        {
+          "am_trips": 250,
+          "dipole_r": 73.3,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.651603,
+          "from_lon": -79.408346,
+          "pair_label": "Palmerston Ave / Dundas St W \u2192 Temperance St Station",
+          "pm_reverse": 111,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.650945,
+          "to_lon": -79.379498,
+          "width": 8.288179408697676
+        },
+        {
+          "am_trips": 205,
+          "dipole_r": 73.2,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.639832,
+          "from_lon": -79.395954,
+          "pair_label": "Fort York  Blvd / Capreol Ct \u2192 Union Station (North)",
+          "pm_reverse": 172,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.645649620032444,
+          "to_lon": -79.38116314068574,
+          "width": 7.991814253184372
+        },
+        {
+          "am_trips": 395,
+          "dipole_r": 73.1,
+          "dst_color": [
+            30,
+            110,
+            210,
+            230
+          ],
+          "from_lat": 43.638925,
+          "from_lon": -79.4168659,
+          "pair_label": "Lynn Williams St / East Liberty St \u2192 King St W / Bay St (West Side)",
+          "pm_reverse": 119,
+          "src_color": [
+            220,
+            70,
+            70,
+            230
+          ],
+          "to_lat": 43.64852,
+          "to_lon": -79.380576,
+          "width": 8.97212131688172
+        }
+      ],
+      "getHeight": 0.35,
+      "getSourceColor": "@@=src_color",
+      "getSourcePosition": "@@=[from_lon, from_lat]",
+      "getTargetColor": "@@=dst_color",
+      "getTargetPosition": "@@=[to_lon, to_lat]",
+      "getTilt": 12,
+      "getWidth": "@@=width",
+      "id": "ab3808d9-1e96-4c1c-b120-4d672a9c408a",
+      "pickable": true
+    }
+  ],
+  "mapProvider": "carto",
+  "mapStyle": "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'text': '{pair_label}\nMorning trips: {am_trips}  |  Evening reverse: {pm_reverse}\nDipole strength: {dipole_r}'};
+    const customLibraries = null;
+    const configuration = null;
+
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration,
+          });
+
+  </script>
+</html>

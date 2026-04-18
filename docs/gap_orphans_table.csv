@@ -1,0 +1,46 @@
+a_name,b_name,trips,dist_km,affinity,built_cov,plan_cov,combined_cov
+Windsor St / Newcastle St,Grand Avenue Park,3229,0.92,22.6,0.0,0.0,0.0
+College St / Major St,Robert St / Bloor St W - SMART,1923,0.93,35.9,13.3,13.7,13.8
+Windsor St / Newcastle St,36 Park Lawn Rd,1781,1.29,32.7,0.0,16.2,16.2
+Union Station,Front St W / Blue Jays Way,1755,0.85,18.8,11.8,22.5,23.1
+Dundas St E / Regent Park Blvd,Yonge St / Dundas Sq,1656,1.6,23.7,17.2,7.2,18.8
+Dundas St W / Yonge St,Dundas St E / Regent Park Blvd,1605,1.69,25.0,16.6,11.9,22.9
+Union Station,Front St W / Spadina Ave,1580,1.25,15.2,16.0,22.9,23.6
+King St W / Portland St ,Simcoe St / King St W,1486,1.23,25.0,12.8,22.3,22.3
+College St / Huron St,Soho St / Queen St W,1268,1.01,27.1,13.7,5.7,14.1
+Soho St / Queen St W,Baldwin St / Spadina Ave - SMART,1159,0.7,12.3,4.5,2.6,4.8
+Yonge St / Dundas Sq,Shuter St/River St,1039,1.83,33.0,10.3,11.9,22.2
+Lisgar Park,King St W / Portland St ,936,1.89,13.5,5.2,16.3,16.3
+Dundas St W / Yonge St,Dundas St E / Parliament St,913,1.32,17.3,7.5,7.6,15.2
+College Park - Yonge St Entrance,Wellesley St E / Parliament St,900,1.37,22.4,19.6,23.7,31.8
+Marilyn Bell Park Tennis Court,Humber Bay Shores Park / Marine Parade Dr,877,3.26,19.1,3.7,0.0,3.7
+Dundas St W / Edna Ave,Roncesvalles Ave / Fermanagh Ave,863,1.25,24.4,12.7,11.8,16.4
+Dalton Rd / Bloor St W,College St / Major St,831,1.01,21.1,19.4,19.7,19.8
+Bloor St W / Dundas St W,Roncesvalles Ave / Fermanagh Ave,827,1.14,20.4,8.5,3.6,8.7
+Front St W / Yonge St (Hockey Hall of Fame),Cherry St / Distillery Ln,824,1.72,15.6,19.9,24.9,44.8
+Dundas St W / Edna Ave,Annette St / Dundas St W,809,0.92,17.9,2.2,24.5,24.5
+Humber Bay Shores Park East,Marilyn Bell Park Tennis Court,796,2.82,37.7,8.2,0.0,8.2
+Bloor St W / Dundas St W,Garden Ave / Roncesvalles Ave,795,1.44,28.1,9.7,2.9,9.8
+University Ave / Gerrard St W (East Side),Church St / Shuter St,770,1.06,13.7,17.3,14.9,30.2
+Bathurst Subway Station,College St / Markham St,764,1.16,12.6,19.6,19.9,20.0
+Augusta Ave / Dundas St W,Dundas St W / Yonge St,760,1.66,20.7,18.1,13.6,19.7
+Dundas St E / Parliament St,Yonge St / Dundas Sq,759,1.24,13.0,8.1,1.2,9.2
+Beaty Ave / Queen St W,Hanna Ave / Snooker St,752,1.67,33.9,0.0,12.4,12.4
+Princess St / Front St E,Front St E / Cooperage St,736,0.81,11.2,12.3,0.0,12.3
+Tommy Thompson Park (Leslie Street Spit),Cherry St / Polson St,730,2.48,29.7,17.9,19.2,19.3
+Gerrard St E / Broadview Ave  - SMART,Gerrard Square Mall (1010 Gerrard St E),728,1.12,12.0,8.8,8.9,17.7
+High Park Subway Station,High Park Ave / Dundas St W,724,1.27,36.4,7.9,7.9,7.9
+Cherry St / Distillery Ln,Front St W / Bay St (South Side),703,1.83,36.5,19.3,23.9,42.6
+Baldwin St / Spadina Ave - SMART,Robert St / Bloor St W - SMART,688,1.33,17.0,15.7,15.7,15.8
+College St / Crawford St,Rusholme Park Cres / College St,664,0.91,11.3,19.2,19.2,30.2
+Dundas St E / Regent Park Blvd,Toronto Eaton Centre (Yonge St) - SMART,659,1.65,15.3,16.6,9.8,21.0
+King St W / Bay St (West Side),King St W / Stafford St,649,2.55,27.9,19.5,24.4,24.5
+Claremont St / Dundas St W,Bloor St W / Manning Ave - SMART,620,1.45,11.6,12.6,12.3,12.6
+Augusta Ave / Dundas St W,Jarvis St / Dundas St E,616,2.21,30.5,13.5,14.8,19.2
+York St / Queens Quay W,Cherry St / Polson St,603,2.38,12.5,14.2,0.6,14.2
+Dundas St W / Edna Ave,Garden Ave / Roncesvalles Ave,601,1.54,23.7,13.0,9.5,16.0
+Lake Shore Blvd W / Ontario Dr,Humber Bay Shores Park / Marine Parade Dr,600,4.56,17.2,16.8,0.0,16.8
+Bond St / Queen St E,Jimmie Simpson Park (Queen St E),600,2.77,14.5,15.2,3.6,15.3
+Union Station,Navy Wharf Crt / Bremner Blvd,598,1.02,11.7,10.2,6.4,16.6
+Danforth Ave / Lamb Ave,Highfield Rd / Gerrard St E,583,1.19,12.1,11.0,3.0,11.0
+Dundas St W / St. Patrick St,Palmerston Ave / Dundas St W,567,1.55,14.7,15.9,15.9,16.0

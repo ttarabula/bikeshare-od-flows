@@ -1,0 +1,16 @@
+station_a,station_b,trips,dist_km,affinity,lane_cov_pct
+Windsor St / Newcastle St,Grand Avenue Park,3229,0.92,22.6,0.0
+College St / Major St,Robert St / Bloor St W - SMART,1923,0.93,35.9,13.3
+Windsor St / Newcastle St,36 Park Lawn Rd,1781,1.29,32.7,0.0
+Union Station,Front St W / Blue Jays Way,1755,0.85,18.8,11.8
+Dundas St E / Regent Park Blvd,Yonge St / Dundas Sq,1656,1.6,23.7,17.2
+Dundas St W / Yonge St,Dundas St E / Regent Park Blvd,1605,1.69,25.0,16.6
+Union Station,Front St W / Spadina Ave,1580,1.25,15.2,16.0
+King St W / Portland St ,Simcoe St / King St W,1486,1.23,25.0,12.8
+College St / Huron St,Soho St / Queen St W,1268,1.01,27.1,13.7
+Soho St / Queen St W,Baldwin St / Spadina Ave - SMART,1159,0.7,12.3,4.5
+Yonge St / Dundas Sq,Shuter St/River St,1039,1.83,33.0,10.3
+Lisgar Park,King St W / Portland St ,936,1.89,13.5,5.2
+Dundas St W / Yonge St,Dundas St E / Parliament St,913,1.32,17.3,7.5
+College Park - Yonge St Entrance,Wellesley St E / Parliament St,900,1.37,22.4,19.6
+Bloor St W / Christie St,Christie St / Dupont St,896,0.89,11.6,5.3
